@@ -2,10 +2,10 @@
 #'
 #' \code{dstringcountdist} returns the density function for the String Count Distribution
 #'
-#' The String Count Distribution is the distribution of the string-count for a specified string vector ```string```` in a random
-#' vector of IID categorical variables from an alphabet ```alphabet```` with probability vector ```probs```.  The function allows the user
-#' to specify the ```alphabet```` for the analysis, with the default alphabet being the natural numbers up to the length of the probability
-#' vector.  (Note: The user can give either a numeric vector or a character vector for the ```string```` and ```alphabet````, but the elements
+#' The String Count Distribution is the distribution of the string-count for a specified string vector ```string``` in a random
+#' vector of IID categorical variables from an alphabet ```alphabet``` with probability vector ```probs```.  The function allows the user
+#' to specify the ```alphabet``` for the analysis, with the default alphabet being the natural numbers up to the length of the probability
+#' vector.  (Note: The user can give either a numeric vector or a character vector for the ```string``` and ```alphabet```, but the elements
 #' in the string must be in the alphabet, and both vectors must be the same type.)
 #'
 #' @usage \code{dstringcountdist()}
