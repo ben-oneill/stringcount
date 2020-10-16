@@ -2,11 +2,11 @@
 #'
 #' \code{rstringcountdist} returns the random values from the String Count Distribution
 #'
-#' The String Count Distribution is the distribution of the string-count for a specified string vector ```string```` in a random
+#' The String Count Distribution is the distribution of the string-count for a specified string vector ```string``` in a random
 #' vector of IID categorical variables from an alphabet ```alphabet``` with probability vector ```probs```.  This function generates
 #' random outputs from this distribution using the underlying pseudo-random number generator (PRNG) in ```R```.  The function allows the
-#' user to specify the ```alphabet```` for the analysis, with the default alphabet being the natural numbers up to the length of the
-#' probability vector.  (Note: The user can give either a numeric vector or a character vector for the ```string```` and ```alphabet````,
+#' user to specify the ```alphabet``` for the analysis, with the default alphabet being the natural numbers up to the length of the
+#' probability vector.  (Note: The user can give either a numeric vector or a character vector for the ```string``` and ```alphabet```,
 #' but the elements in the string must be in the alphabet, and both vectors must be the same type.)  The output of the function is a
 #' vector composed of ```n``` values generated from the distribution.
 #'
