@@ -10,10 +10,10 @@
 #' text.  If the inputs are longer vectors of numeric or character values then the elements of the vectors are treated as individual symbols and
 #' the vector gives the string of symbols that is checked in the count.
 #'
-#' @usage \code{stringcountx()}
+#' @usage \code{stringcount()}
 #' @param text Either a single character string or a numeric/character vector
 #' @param string Either a single character string or a numeric/character vector (must have the same type as the ```text```)
-#' @param allow.overlap A logical value; if ```TRUE``` then string occurrances are counted even if they overlap with previously counted occurrances
+#' @param allow.overlap Logical; if ```TRUE``` then string occurrances are counted even if they overlap with previously counted occurrances
 #' @return The count value for the number of times the string occurs in the text
 
 stringcount <- function(text, string, allow.overlap = TRUE) {

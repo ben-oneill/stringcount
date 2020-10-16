@@ -12,11 +12,11 @@
 #'
 #' @usage \code{rstringcountdist()}
 #' @param n The numer of random variables to generate for the output
-#' @param size The size argument (either a scalar or a vector with the same length as x)
+#' @param size The size argument (a scalar)
 #' @param string A numeric/character vector
 #' @param probs A vector of the symbol probabilities (taken over the symbols in the \code{alphabet})
 #' @param alphabet A numeric/character vector containing the alphabet for the analysis
-#' @return The probability or log-probability values from the density function
+#' @return A vector of pseudo-random string-counts from the distribution
 
 rstringcountdist <- function(n, size, string, probs, alphabet = NULL) {
 
@@ -70,7 +70,7 @@ rstringcountdist <- function(n, size, string, probs, alphabet = NULL) {
   COUNT <- rep(NA, n)
   for (i in 1:n) {
     TEXT     <- sample.int(K, size = size, replace = TRUE, prob = probs)
-    COUNT[i] <- stringcount(text = TEXT, string = string) }
+    COUNT[i] <- stringcount(text = TEXT, string = MATCH) }
 
   #Output the counts
   COUNT }

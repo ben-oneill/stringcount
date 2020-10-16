@@ -1,6 +1,6 @@
-#' Density function for the String Count Distribution
+#' Cumulative distribution function for the String Count Distribution
 #'
-#' \code{dstringcountdist} returns the density function for the String Count Distribution
+#' \code{pstringcountdist} returns the cumulative distribution function for the String Count Distribution
 #'
 #' The String Count Distribution is the distribution of the string-count for a specified string vector ```string``` in a random
 #' vector of IID categorical variables from an alphabet ```alphabet``` with probability vector ```probs```.  The function allows the user
@@ -8,31 +8,35 @@
 #' vector.  (Note: The user can give either a numeric vector or a character vector for the ```string``` and ```alphabet```, but the elements
 #' in the string must be in the alphabet, and both vectors must be the same type.)
 #'
-#' @usage \code{dstringcountdist()}
-#' @param x The argument value(s) of the string-count in the density function
-#' @param size The size argument (either a scalar or a vector with the same length as ```x```)
+#' @usage \code{pstringcountdist()}
+#' @param q The argument value(s) of the string-count quantile in the cumulative distribution function
+#' @param size The size argument (either a scalar or a vector with the same length as ```q```)
 #' @param string A numeric/character vector
 #' @param probs A vector of the symbol probabilities (taken over the symbols in the ```alphabet```)
 #' @param alphabet A numeric/character vector containing the alphabet for the analysis
-#' @param log Logical; if ```TRUE``` the function returns the log-probability; if ```FALSE``` the function returns the probability
-#' @return The probability or log-probability values from the density function
+#' @param lower.tail Logical; if ```TRUE``` the cumulative probabilities are ```P[X ??? q]```; if ```FALSE``` they are ```P[X > q]```
+#' @param log.p Logical; if ```TRUE``` the function returns the cumulative log-probability; if ```FALSE``` the function returns the cumulative probability
+#' @return The probability or log-probability values from the cumulative distribution function
 
-dstringcountdist <- function(x, size, string, probs, alphabet = NULL, log = FALSE) {
+pstringcountdist <- function(q, size, string, probs, alphabet = NULL, lower.tail = TRUE, log.p = FALSE) {
 
-  #Check inputs x, size and log
-  if (!is.vector(x))                                           { stop('Error: x must be a numeric vector') }
-  if (!is.numeric(x))                                          { stop('Error: x must be a numeric vector') }
-  RR <- length(x)
-  if (RR == 0)                                                 { stop('Error: x must contain at least one value') }
+  #Check inputs q, size, lower.tail and log
+  if (!is.vector(q))                                           { stop('Error: q must be a numeric vector') }
+  if (!is.numeric(q))                                          { stop('Error: q must be a numeric vector') }
+  RR <- length(q)
+  if (RR == 0)                                                 { stop('Error: q must contain at least one value') }
   if (!is.vector(size))                                        { stop('Error: size must be an integer vector') }
   if (!is.numeric(size))                                       { stop('Error: size must be an integer vector') }
   if (as.integer(size) != size)                                { stop('Error: size must be an integer vector') }
   if (min(size) < 1)                                           { stop('Error: size must contain only positive integers') }
   if (length(size) == 1) { size <- rep(size, RR) }
   if (length(size) != RR)                                      { stop('Error: size should either be a scalar or a vector with the same length as x') }
-  if (!is.vector(log))                                         { stop('Error: log must be a single logical value') }
-  if (!is.logical(log))                                        { stop('Error: log must be a single logical value') }
-  if (length(log) != 1)                                        { stop('Error: log must be a single logical value') }
+  if (!is.vector(lower.tail))                                  { stop('Error: lower.tail must be a single logical value') }
+  if (!is.logical(lower.tail))                                 { stop('Error: lower.tail must be a single logical value') }
+  if (length(lower.tail) != 1)                                 { stop('Error: lower.tail must be a single logical value') }
+  if (!is.vector(log.p))                                       { stop('Error: log.p must be a single logical value') }
+  if (!is.logical(log.p))                                      { stop('Error: log.p must be a single logical value') }
+  if (length(log.p) != 1)                                      { stop('Error: log.p must be a single logical value') }
 
   #Check input probs
   if (!is.vector(probs))                                       { stop('Error: probs must be a probability vector') }
@@ -86,9 +90,12 @@ dstringcountdist <- function(x, size, string, probs, alphabet = NULL, log = FALS
     if (rr > 0) { ARRAY[nn+1, rr+1, m+1] <- matrixStats::logSumExp(LOGH[, m+1] + ARRAY[nn, rr, ]) }
     LLL[nn+1, rr+1] <- matrixStats::logSumExp(ARRAY[nn+1, rr+1, ]) } }
 
-  #Extract log-probabilities for argument values
-  LOGDENS <- rep(-Inf, RR)
-  for (i in 1:RR) { if (x[i] %in% (0:max.r)) { LOGDENS[i] <- LLL[size[i]+1, x[i]+1] } }
+  #Extract cumulative log-probabilities for argument values
+  LOGPROB <- rep(-Inf, RR)
+  for (i in 1:RR) { if (q[i] >= 0) { LOGPROB[i] <- matrixStats::logSumExp(LLL[size[i]+1, 1:(min(floor(q[i]), max.r)+1)]) } }
+
+  #Adjust log-probabilities if computing upper tail
+  if (!lower.tail) { LOGPROB <- VGAM::log1mexp(-LOGPROB) }
 
   #Return output
-  if (log) { LOGDENS } else { exp(LOGDENS) } }
+  if (log.p) { LOGPROB } else { exp(LOGPROB) } }

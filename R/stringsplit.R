@@ -11,7 +11,7 @@
 #'
 #' @usage \code{stringsplit()}
 #' @param string A character value/vector
-#' @param split A logical value; if ```TRUE``` the function will split the string; if ```FALSE``` the function will concatenate the string
+#' @param split Logical; if ```TRUE``` the function will split the string; if ```FALSE``` the function will concatenate the string
 #' @return A character vector giving the split/concatenated string.
 
 stringsplit <- function(string, split = NULL) {

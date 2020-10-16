@@ -4,15 +4,15 @@
 #'
 #' The hidden state variable used in the String Count Distribution is the number of characters in the string that are presently matched
 #' after any given number of characters in the text.  The present function computes the structure matrix for the state variable and the
-#' transition probability matrix for the state variable.  The first of these matrices depends on the string vector ```string```` and the
+#' transition probability matrix for the state variable.  The first of these matrices depends on the string vector ```string``` and the
 #' second depends on the string vector and the probability vector ```probs``` for the underlying symbols in the alphabet.  The function
-#' allows the user to specify the ```alphabet```` for the analysis, with the default alphabet being the natural numbers up to the length
-#' of the probability vector.  (Note: The user can give either a numeric vector or a character vector for the ```string```` and ```alphabet````,
+#' allows the user to specify the ```alphabet``` for the analysis, with the default alphabet being the natural numbers up to the length
+#' of the probability vector.  (Note: The user can give either a numeric vector or a character vector for the ```string``` and ```alphabet```,
 #' but the elements in the string must be in the alphabet, and both vectors must be the same type.)
 #'
 #' @usage \code{stringmatrix()}
 #' @param string A numeric/character vector
-#' @param probs A vector of the symbol probabilities (taken over the symbols in the \code{alphabet})
+#' @param probs A vector of the symbol probabilities (taken over the symbols in the ```alphabet```)
 #' @param alphabet A numeric/character vector containing the alphabet for the analysis
 #' @return A list containing the structure matrix and transition probability matrix for the state variable
 
