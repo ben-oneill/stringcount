@@ -8,22 +8,30 @@
 #' second depends on the string vector and the probability vector ```probs``` for the underlying symbols in the alphabet.  The function
 #' allows the user to specify the ```alphabet``` for the analysis, with the default alphabet being the natural numbers up to the length
 #' of the probability vector.  (Note: The user can give either a numeric vector or a character vector for the ```string``` and ```alphabet```,
-#' but the elements in the string must be in the alphabet, and both vectors must be the same type.)
+#' but the elements in the string must be in the alphabet, and both vectors must be the same type.)  The state variable is affecte by whether
+#' or not overlapping occurrances of the string are both included in the count.  If ```allow.overlap``` is set to ```TRUE``` then the string-
+#' count includes all occurrances of overlapping strings (i.e., they are both counted even if they share some symbols), and this is reflected
+#' in the structure and transition matrices.  Contrarily, if ```allow.overlap``` is set to ```FALSE``` then the string-count excludes any
+#' occurrances that share symbols with a previously counted occurrance, and this is again reflected in the structure and transition matrices.
 #'
 #' @usage \code{stringmatrix()}
 #' @param string A numeric/character vector
 #' @param probs A vector of the symbol probabilities (taken over the symbols in the ```alphabet```)
 #' @param alphabet A numeric/character vector containing the alphabet for the analysis
+#' @param allow.overlap Logical; if ```TRUE``` then string occurrances are counted even if they overlap with previously counted occurrances
 #' @return A list containing the structure matrix and transition probability matrix for the state variable
 
-stringmatrix <- function(string, probs, alphabet = NULL) {
+stringmatrix <- function(string, probs, alphabet = NULL, allow.overlap = TRUE) {
 
-  #Check input probs
+  #Check inputs probs and allow.overlap
   if (!is.vector(probs))                                       { stop('Error: probs must be a probability vector') }
   if (!is.numeric(probs))                                      { stop('Error: probs must be a probability vector') }
   if (length(probs) == 0)                                      { stop('Error: probs must have at least one value') }
   if (min(probs) < 0)                                          { stop('Error: probs must be a probability vector') }
   if (sum(probs) != 1)                                         { stop('Error: probs must be a probability vector') }
+  if (!is.vector(allow.overlap))                               { stop('Error: allow.overlap must be a single logical value') }
+  if (!is.logical(allow.overlap))                              { stop('Error: allow.overlap must be a single logical value') }
+  if (length(allow.overlap) != 1)                              { stop('Error: allow.overlap must be a single logical value') }
 
   #Check input alphabet
   if (is.null(alphabet)) {
@@ -67,6 +75,14 @@ stringmatrix <- function(string, probs, alphabet = NULL) {
       if (g == 0) { BREAK <- TRUE } }
     G[i+1, x] <- g } }
 
+  #Adjust last row of structure matrix is overlap is disallowed
+  if (!allow.overlap) {
+    G[m+1, ] <- 0
+    G[m+1, MATCH[1]] <- 1 }
+
+  #Compute overlap value
+  OVERLAP <- max(G[m+1,])-1
+
   #Generate the string advancement matrix
   H <- matrix(0, nrow = m+1, ncol = m+1)
   rownames(H) <- sprintf('State[%s]', 0:m)
@@ -79,4 +95,4 @@ stringmatrix <- function(string, probs, alphabet = NULL) {
     H[i+1, h+1] <- sum(probs*IND) } }
 
   #Output the matrix
-  list(structure = G, transition = H) }
+  list(max.overlap = OVERLAP, structure = G, transition = H) }

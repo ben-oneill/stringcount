@@ -16,11 +16,12 @@
 #' @param string A numeric/character vector
 #' @param probs A vector of the symbol probabilities (taken over the symbols in the \code{alphabet})
 #' @param alphabet A numeric/character vector containing the alphabet for the analysis
+#' @param allow.overlap Logical; if ```TRUE``` then string occurrances are counted even if they overlap with previously counted occurrances
 #' @return A vector of pseudo-random string-counts from the distribution
 
-rstringcountdist <- function(n, size, string, probs, alphabet = NULL) {
+rstringcountdist <- function(n, size, string, probs, alphabet = NULL, allow.overlap = TRUE) {
 
-  #Check inputs r, size and log
+  #Check inputs r, size, allow.overlap, and log
   if (!is.vector(n))                                           { stop('Error: n must be a positive integer') }
   if (!is.numeric(n))                                          { stop('Error: n must be a positive integer') }
   if (length(n) != 1)                                          { stop('Error: n must be a single positive integer') }
@@ -31,6 +32,9 @@ rstringcountdist <- function(n, size, string, probs, alphabet = NULL) {
   if (length(size) != 1)                                       { stop('Error: size must be a single positive integer') }
   if (as.integer(size) != size)                                { stop('Error: size must be a positive integer') }
   if (min(size) < 1)                                           { stop('Error: size must be a positive integer') }
+  if (!is.vector(allow.overlap))                               { stop('Error: allow.overlap must be a single logical value') }
+  if (!is.logical(allow.overlap))                              { stop('Error: allow.overlap must be a single logical value') }
+  if (length(allow.overlap) != 1)                              { stop('Error: allow.overlap must be a single logical value') }
 
   #Check input probs
   if (!is.vector(probs))                                       { stop('Error: probs must be a probability vector') }
@@ -70,7 +74,7 @@ rstringcountdist <- function(n, size, string, probs, alphabet = NULL) {
   COUNT <- rep(NA, n)
   for (i in 1:n) {
     TEXT     <- sample.int(K, size = size, replace = TRUE, prob = probs)
-    COUNT[i] <- stringcount(text = TEXT, string = MATCH) }
+    COUNT[i] <- stringcount(text = TEXT, string = MATCH, allow.overlap = allow.overlap) }
 
   #Output the counts
   COUNT }
