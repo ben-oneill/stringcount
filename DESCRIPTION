@@ -1,11 +1,16 @@
 Package: stringcount
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Probability Functions for the String-Count Distribution
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Date: 18 October 2020
+Authors@R: person("Ben", "O'Neill", email = "ben.oneill@hotmail.com", role = c("aut", "cre"))
+Author: Ben O'Neill [aut, cre]
+Maintainer: Ben O'Neill <ben.oneill@hotmail.com>
+Description: Contains probability functions and related functions for the string-count distribution (distribution
+    of string-counts for texts composed of independent identically distributed (IID) symbols.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    matrixStats
+RoxygenNote: 6.1.1
