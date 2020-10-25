@@ -101,16 +101,19 @@ dstringcountdist <- function(x, size, string, probs, alphabet = NULL, allow.over
     } else {
 
     #Compute ARRAY and LOGPROBS together
-    LOGH  <- log(MATS$transition)
-    ARRAY <- array(-Inf, dim = c(max.n+1, max.r+1, m+1),
+    LOGH  <- log(MATS$transition.probs)
+    max.h <- nrow(LOGH)-1
+    hh.start <- MATS$state.start
+    hh.count <- MATS$state.count
+    ARRAY <- array(-Inf, dim = c(max.n+1, max.r+1, max.h+1),
                    dimnames = list(sprintf('n[%s]', 0:max.n), sprintf('r[%s]', 0:max.r), sprintf('h[%s]', 0:m)))
-    ARRAY[1,1,1] <- 0
+    ARRAY[1, 1, hh.start+1] <- 0
     for (nn in 1:max.n) {
       UR <- max(0, 1+floor((nn-m)/(m-MO)))
-      for (rr in 0:UR) {
-        for (hh in 0:(m-1)) {
-          ARRAY[nn+1, rr+1, hh+1] <- matrixStats::logSumExp(LOGH[, hh+1] + ARRAY[nn, rr+1, ]) }
-        if (rr > 0) { ARRAY[nn+1, rr+1, m+1] <- matrixStats::logSumExp(LOGH[, m+1] + ARRAY[nn, rr, ]) }
+      for (rr in 0:UR)    {
+      for (hh in 0:max.h) {
+        if (hh %in% hh.count) { if (rr > 0) { ARRAY[nn+1, rr+1, hh+1] <- matrixStats::logSumExp(LOGH[, hh+1] + ARRAY[nn, rr, ])   } } else {
+                                              ARRAY[nn+1, rr+1, hh+1] <- matrixStats::logSumExp(LOGH[, hh+1] + ARRAY[nn, rr+1, ]) } }
         LOGPROBS[nn+1, rr+1] <- matrixStats::logSumExp(ARRAY[nn+1, rr+1, ]) } } }
 
   #Extract log-probabilities for argument values
