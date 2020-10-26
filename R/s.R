@@ -1,6 +1,6 @@
 #' Split/concatenate between a single character string and a vector of its individual symbols
 #'
-#' \code{stringsplit} can be used to split a single character string into a vector of its individual symbols, or concatenate a character
+#' \code{s} can be used to split a single character string into a vector of its individual symbols, or concatenate a character
 #' vector with multiple elements into a single character string.  The user may set the logical value ```split``` to specify if they wish to
 #' split or concatenate the ```string``` input.  If this value is unspecified then the function will determine whether to split or concatenate
 #' by looking at the length of the ```string``` vector; if this vector has a single element it will be split; if it has multiple elements it
@@ -9,12 +9,12 @@
 #' If the user split the ```string``` then the function will return a character vector showing the individual symbols in the input string; if
 #' the user concatenated the ```string``` then the function will return a single character value with the concatenated string.
 #'
-#' @usage \code{stringsplit()}
+#' @usage \code{s()}
 #' @param string A character value/vector
 #' @param split Logical; if ```TRUE``` the function will split the string; if ```FALSE``` the function will concatenate the string
 #' @return A character vector giving the split/concatenated string.
 
-stringsplit <- function(string, split = NULL) {
+s <- function(string, split = NULL) {
 
   #Check input
   if (!is.vector(string))                                      { stop('Error: string must be a character vector') }
