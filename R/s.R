@@ -12,9 +12,10 @@
 #' @usage \code{s()}
 #' @param string A character value/vector
 #' @param split Logical; if ```TRUE``` the function will split the string; if ```FALSE``` the function will concatenate the string
+#' @param warning Logical; if ```TRUE``` the function will give a warning for concatenation of strings with elements that are not single characters
 #' @return A character vector giving the split/concatenated string.
 
-s <- function(string, split = NULL) {
+s <- function(string, split = NULL, warning = TRUE) {
 
   #Check input
   if (!is.vector(string))                                      { stop('Error: string must be a character vector') }
@@ -24,6 +25,10 @@ s <- function(string, split = NULL) {
   if (!is.vector(split))                                       { stop('Error: split should be a single logical value (if specified)') }
   if (!is.logical(split))                                      { stop('Error: split should be a single logical value (if specified)') }
   if (length(split) != 1)                                      { stop('Error: split should be a single logical value (if specified)') } }
+  if (!missing(warning)) {
+  if (!is.vector(warning))                                     { stop('Error: warning should be a single logical value (if specified)') }
+  if (!is.logical(warning))                                    { stop('Error: warning should be a single logical value (if specified)') }
+  if (length(warning) != 1)                                    { stop('Error: warning should be a single logical value (if specified)') } }
 
   #Determine transformation type
   if (missing(split)) { SPLIT <- (length(string) == 1) }
@@ -37,7 +42,12 @@ s <- function(string, split = NULL) {
 
   #Concatenate the input
   if (!SPLIT) {
-    if (!all(nchar(string) == 1)) { warning('At least one element of string was not a single character symbol\n  Concatenation loses the distinction between individual symbols and longer strings of symbols\n  If you try to reverse the concatenation you will not get back your original vector') }
+    if (warning) {
+    if (!all(nchar(string) == 1)) {
+      WARNING <- paste0('At least one element of string was not a single character symbol\n',
+                        '  Concatenation loses the distinction between individual symbols and longer strings of symbols\n',
+                        '  If you try to reverse the concatenation you will not get back your original vector')
+      warning(WARNING) } }
     OUT <- paste(string, collapse = '') }
 
   #Give the output
