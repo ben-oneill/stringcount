@@ -18,8 +18,8 @@
 #' (and no other symbols).
 #'
 #' @usage \code{DFA()}
-#' @param string A string expressed as a character vector
-#' @param language A list of strings with each string expressed as a character vector
+#' @param string A string expressed as a numeric/character vector
+#' @param language A list of strings with each string expressed as a numeric/character vector
 #' @param alphabet A numeric/character vector containing the alphabet for the analysis
 #' @param probs A vector of the symbol probabilities (taken over the symbols in the \code{alphabet})
 #' @param allow.overlap Logical; if \code{TRUE} then string occurrances are counted even if they overlap with previously counted occurrances
@@ -237,7 +237,9 @@ print.DFA <- function(object) {
   #Print information on alphabet and language
   cat(paste0(L1, '------Alphabet and language information-----', L2), '\n \n')
   SSS <- ifelse(length(ALPHABET) == 1, 'symbol', 'symbols')
-  cat(ALPHABET.NAME, 'is an alphabet containing', length(ALPHABET), SSS, '\n', c(ALPHABET), '\n \n')
+  if (is.na(ALPHABET.NAME)) {
+    cat('No alphabet was specified --- minimal alphabet contains', length(ALPHABET), SSS, '\n', c(ALPHABET), '\n \n') } else {
+    cat(ALPHABET.NAME, 'is an alphabet containing', length(ALPHABET), SSS, '\n', c(ALPHABET), '\n \n') }
   for (s in 1:S) {
     SSS <- ifelse(length(LANGUAGE[[s]]) == 1, 'symbol', 'symbols')
     cat(STRING.NAMES[s], 'contains', length(LANGUAGE[[s]]), SSS, 'with maximum overlap', OVERLAP[s], '\n', c(LANGUAGE[[s]]), '\n \n') }
