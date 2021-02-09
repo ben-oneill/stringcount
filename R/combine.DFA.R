@@ -4,8 +4,7 @@
 #'
 #' This function takes two input DFAs and combines these into a single minimised DFA for the union language (i.e., the language for the
 #' output is the union of the langauges in the input DFAs).  The input DFAs must be compatible with one another, which requires them to have
-#' the same\code{allow.overlap} and \code{probs} (if specified).  Names of these objects need not be the same, and in the event of a difference
-#' the names from the first input DFA are used.
+#' the same\code{allow.overlap} and \code{probs} (if specified).
 #'
 #' @usage \code{combine.DFA()}
 #' @param dfa1 A deterministic finite automaton (DFA) (see the \code{DFA} function)

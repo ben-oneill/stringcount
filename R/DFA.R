@@ -13,7 +13,7 @@
 #' vector, the resulting stationary probabilities for the states, and the transition-probability matrix for the states.
 #'
 #' **Outputs for sublanguages:** By default the funciton will produce the DFA for the full language, which means that each string will have one
-#' column in the final-state table.  However, the user may use the \code{sublanguage} input to specify an alternative sublanguage for the output.
+#' column in the final-state table.  However, the user may use the \code{sublanguages} input to specify an alternative sublanguage for the output.
 #' This input can be specified as a binary matrix with one row for each string in the language and any number of columns, where each column is
 #' interpreted as a sublanguage including all strings with a positive binary indicator.  Alternatively, this input can be specified as a list of
 #' vectors of string indices, where each vector is interpreted as a sublanguage including all strings with the specified indices.
