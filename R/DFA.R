@@ -504,16 +504,42 @@ print.sublanguages.DFA <- function(object) {
   S <- length(LANGUAGE)
   D <- length(SUBLANGUAGES)
 
-  #Print information on alphabet and language
-  cat('-------------Alphabet and language information------------ \n \n')
-  SSS <- ifelse(length(ALPHABET) == 1, 'symbol', 'symbols')
-  cat('The alphabet contains', length(ALPHABET), SSS, '\n', c(ALPHABET), '\n \n')
-  for (s in 1:S) {
-    SSS <- ifelse(length(LANGUAGE[[s]]) == 1, 'symbol', 'symbols')
-    cat(STRING.NAMES[s], 'contains', length(LANGUAGE[[s]]), SSS, '\n', c(LANGUAGE[[s]]), '\n \n') }
-  cat('------------------Sublanguage information----------------- \n \n')
+  #Print information on sublanguages
+  cat('--------------------Sublanguage information------------------- \n \n')
   for (d in 1:D) {
-    SSS <- ifelse(length(LANGUAGE[[s]]) == 1, 'string', 'strings')
+    SSS <- ifelse(length(SUBLANGUAGES[[d]]) == 1, 'string', 'strings')
     cat(SUB.NAMES[d], 'contains', length(SUBLANGUAGES[[d]]), SSS, '(minimum completion =', MC[d], 'symbols) \n', c(SUBLANGUAGES[[d]]), '\n \n') }
-  cat('---------------------------------------------------------- \n \n') }
+  cat('-------------------------------------------------------------- \n \n') }
+
+
+probs <- function(dfa) {
+
+  if (class(dfa) != 'DFA')                       { stop('Error: This function only operates on objects of class \'DFA\'') }
+
+  #Create output
+  OUT <- dfa[c('probs', 'transition.probs', 'stationary.probs')]
+  class(OUT) <- 'probs.DFA'
+
+  #Return output
+  OUT }
+
+
+print.probs.DFA <- function(object) {
+
+  if (class(object) != 'probs.DFA')           { stop('Error: This function only operates on objects of class \'progress.DFA\'') }
+
+  if (is.null(object$probs)) {
+
+    cat('This DFA does not have specified symbol probabilities\n')
+
+    } else {
+
+    #Print probability vector, transition probability matrix and stationary state probabilities (if present)
+    cat('\n-----------------Symbol probabilities----------------- \n \n')
+    print(object$probs)
+    cat('\n------------Stationary state probabilities------------ \n \n')
+    print(object$stationary.probs)
+    cat('\n-------------Transition probability matrix------------ \n \n')
+    print(object$transition.probs)
+    cat('\n------------------------------------------------------ \n \n') } }
 

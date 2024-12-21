@@ -86,7 +86,7 @@ combine.DFA <- function(dfa1, dfa2, minimise = FALSE, minimize = NULL) {
   if (PROBS.INCL) { if (PROBS.INCL1) { PROBS <- PROBS1 } else { PROBS <- PROBS2 } }
 
   #Remove duplicated strings from the languages and merge them
-  #This requires changes to the sublanguages to keep track of
+  #This requires changes to the sublanguages to keep track of the new numbering of strings in languages
   S1 <- length(LANGUAGE1)
   S2 <- length(LANGUAGE2)
   D1 <- length(SUBLANGUAGES1)

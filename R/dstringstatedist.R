@@ -1,39 +1,38 @@
-#' Density function for the String Count Distribution
+#' Density function for the String State Distribution
 #'
-#' \code{dstringcountdist} returns the density function for the String Count Distribution
+#' \code{dstringstatedist} returns the density function for the String State Distribution
 #'
-#' The String Count Distribution is the distribution of the string-count for a specified string vector ```string``` in a random
-#' vector of IID categorical variables from an alphabet ```alphabet``` with probability vector ```probs```.  The function allows the user
-#' to specify the ```alphabet``` for the analysis, with the default alphabet being the natural numbers up to the length of the probability
+#' The String State Distribution is the marginal/conditional distribution of the string-state for a specified string vector ```string``` in
+#' a random vector of IID categorical variables from an alphabet ```alphabet``` with probability vector ```probs```.  The function allows the
+#' user to specify the ```alphabet``` for the analysis, with the default alphabet being the natural numbers up to the length of the probability
 #' vector.  (Note: The user can give either a numeric vector or a character vector for the ```string``` and ```alphabet```, but the elements
 #' in the string must be in the alphabet, and both vectors must be the same type.)
 #'
-#' @usage \code{dstringcountdist()}
-#' @param x The argument value(s) of the string-count in the density function
+#' @usage \code{dstringstatedist()}
+#' @param x The argument value(s) of the string-state in the density function
+#' @param r A vector of conditioning values for the string count (optional)
 #' @param size The size argument (either a scalar or a vector with the same length as ```x```)
 #' @param string A numeric/character vector
 #' @param probs A vector of the symbol probabilities (taken over the symbols in the ```alphabet```)
 #' @param alphabet A numeric/character vector containing the alphabet for the analysis
 #' @param allow.overlap Logical; if ```TRUE``` then string occurrances are counted even if they overlap with previously counted occurrances
-#' @param start.state.probs A vector of probabilities for the starting state (defaults to point mass on the initial state)
 #' @param log Logical; if ```TRUE``` the function returns the log-probability; if ```FALSE``` the function returns the probability
 #' @param full.array Optional input for the full array of joint log-probabilities for the string-count and state variable (from \code{full.array})
 #' @return The probability or log-probability values from the density function
 
-dstringcountdist <- function(x, size, string, probs, alphabet = NULL, allow.overlap = TRUE, start.state.probs = NULL,
-                             log = FALSE, full.array = NULL) {
+dstringstatedist <- function(x, r = NULL, size, string, probs, alphabet = NULL, allow.overlap = TRUE, log = FALSE, full.array = NULL) {
 
   #Check inputs x, size, allow.overlap and log
   if (!is.vector(x))                                           { stop('Error: x must be a numeric vector') }
   if (!is.numeric(x))                                          { stop('Error: x must be a numeric vector') }
-  RR <- length(x)
-  if (RR == 0)                                                 { stop('Error: x must contain at least one value') }
+  HH <- length(x)
+  if (HH == 0)                                                 { stop('Error: x must contain at least one value') }
   if (!is.vector(size))                                        { stop('Error: size must be an integer vector') }
   if (!is.numeric(size))                                       { stop('Error: size must be an integer vector') }
   if (as.integer(size) != size)                                { stop('Error: size must be an integer vector') }
   if (min(size) < 1)                                           { stop('Error: size must contain only positive integers') }
-  if (length(size) == 1) { size <- rep(size, RR) }
-  if (length(size) != RR)                                      { stop('Error: size should either be a scalar or a vector with the same length as x') }
+  if (length(size) == 1) { size <- rep(size, HH) }
+  if (length(size) != HH)                                      { stop('Error: size should either be a scalar or a vector with the same length as x') }
   if (!is.vector(allow.overlap))                               { stop('Error: allow.overlap must be a single logical value') }
   if (!is.logical(allow.overlap))                              { stop('Error: allow.overlap must be a single logical value') }
   if (length(allow.overlap) != 1)                              { stop('Error: allow.overlap must be a single logical value') }
@@ -72,19 +71,15 @@ dstringcountdist <- function(x, size, string, probs, alphabet = NULL, allow.over
   for (i in 1:m) {
     if (!(string[i] %in% alphabet))                            { stop(paste0('Error: string element ', i, ' is not in the alphabet')) } }
 
-  #Check start.state.probs (if not 'stationary')
-  if (!missing(start.state.probs)) {
-    if (!is.vector(start.state.probs))                         { stop('Error: start.state.probs must be a probability vector (if specified)') }
-    if (is.character(start.state.probs)) {
-      if (length(start.state.probs) != 1)                      { stop('Error: start.state.probs must be a probability vector (or \'stationary\')') }
-      NCHAR <- nchar(start.state.probs[1])
-      STATN <- substr('stationary', 1, NCHAR)
-      if (start.state.probs != STATN)                          { stop('Error: start.state.probs must be a probability vector (or \'stationary\')') } }
-    if (!is.character(start.state.probs)) {
-      if (!is.numeric(start.state.probs))                      { stop('Error: start.state.probs must be a probability vector (if specified)') }
-      if (length(start.state.probs) != max.h+1)                { stop('Error: start.state.probs must have one entry for each state (if specified)') }
-      if (min(start.state.probs) < 0)                          { stop('Error: start.state.probs must be a probability vector (if specified)') }
-      if (sum(start.state.probs) != 1)                         { stop('Error: start.state.probs must be a probability vector (if specified)') } } }
+  #Check input r
+  if (!missing(r)) {
+    if (!is.vector(r))                                         { stop('Error: r must be an integer vector (if supplied)') }
+    if (!is.numeric(r))                                        { stop('Error: r must be an integer vector (if supplied)') }
+    if (as.integer(r) != r)                                    { stop('Error: r must be an integer vector (if supplied)') }
+    if (min(r) < 0)                                            { stop('Error: r must contain only positive integers (if supplied)') }
+    if (length(r) == 0)                                        { stop('Error: r must contain at least one value (if supplied)') }
+    if (length(r) == 1) { r <- rep(r, HH) }
+    if (length(r) != HH)                                       { stop('Error: r should either be a scalar or a vector with the same length as x') } }
 
   #Check full array (if provided)
   if (!missing(full.array)) {
@@ -92,53 +87,30 @@ dstringcountdist <- function(x, size, string, probs, alphabet = NULL, allow.over
     if (!identical(string, full.array$string))                 { stop('Error: The full.array you have provided does not match your string') }
     if (!identical(probs, full.array$probs))                   { stop('Error: The full.array you have provided does not match your probs') }
     if (!identical(alphabet, full.array$alphabet))             { stop('Error: The full.array you have provided does not match your alphabet') }
-    if (!identical(allow.overlap, full.array$allow.overlap))   { stop('Error: The full.array you have provided does not match your allow.overlap') }
-    if (!missing(start.state.probs)) {
-      if (!identical(start.state.probs, full.array$start.state.probs)) { stop('Error: The full.array you have provided does not match your start.state.probs') } } }
+    if (!identical(allow.overlap, full.array$allow.overlap))   { stop('Error: The full.array you have provided does not match your allow.overlap') } }
 
   #Get string matrix information
-  MATS     <- stringmatrix(string = string, probs = probs, alphabet = alphabet, allow.overlap = allow.overlap)
-  LOGH     <- log(MATS$transition.probs)
-  MO       <- MATS$max.overlap
-  hh.start <- MATS$state.start
-  hh.count <- MATS$state.count
+  MATS <- stringmatrix(string = string, probs = probs, alphabet = alphabet, allow.overlap = allow.overlap)
+  MO   <- MATS$max.overlap
 
-  #Set starting state log-probabilities (HH0)
-  #The value m0 is the highest state with a non-zero probability (which affects the permissible range of r)
-  if (missing(start.state.probs)) {
-    HH0 <- rep(-Inf, nrow(LOGH))
-    HH0[hh.start+1] <- 0
-  } else {
-    if (is.character(start.state.probs)) {
-      HH0 <- log(MATS$stationary[1,])
-      HH0 <- HH0 - matrixStats::logSumExp(HH0) }
-    if (is.numeric(start.state.probs)) {
-      HH0 <- log(start.state.probs)
-      HH0 <- HH0 - matrixStats::logSumExp(HH0) } }
-  m0 <- max(which(HH0 != -Inf))-1
+  #More checks on input r
+  if (!missing(r)) {
+    for (i in 1:HH) {
+      UR <- max(0, 1+floor((size[i]-m)/(m-MO)))
+      if (r[i] > UR)                                           { stop(paste0('Error: Element ', i, ' of r is too large to be a feasible string-count value')) } } }
+  if (missing(r)) {
+    r <- as.numeric(rep(NA, HH)) }
 
   #set initial values and log-probability matrix
   max.n <- max(size)
-  max.r <- max(0, 1+floor((max.n-m+m0)/(m-MO)))
-  LOGPROBS <- matrix(-Inf, nrow = max.n+1, ncol = max.r+1)
-  LOGPROBS[1,1] <- 0
+  max.r <- max(0, 1+floor((max.n-m)/(m-MO)))
+  max.h <- nrow(MATS$transition.table)-1
 
   #Compute log-probabilities from string-count distribution (compute full array if not provided)
   if (!missing(full.array)) {
 
-
-
-
-
-
-
-
     #Use provided ARRAY to compute LOGPROBS
     ARRAY <- full.array$array
-    for (nn in 1:max.n) {
-      UR <- max(0, 1+floor((nn-m+m0)/(m-MO)))
-      for (rr in 0:(max.r)) {
-        LOGPROBS[nn+1, rr+1] <- matrixStats::logSumExp(ARRAY[nn+1, rr+1, ]) } }
 
     } else {
 
@@ -151,16 +123,20 @@ dstringcountdist <- function(x, size, string, probs, alphabet = NULL, allow.over
                    dimnames = list(sprintf('n[%s]', 0:max.n), sprintf('r[%s]', 0:max.r), sprintf('h[%s]', 0:m)))
     ARRAY[1, 1, hh.start+1] <- 0
     for (nn in 1:max.n) {
-      UR <- max(0, 1+floor((nn-m+m0)/(m-MO)))
+      UR <- max(0, 1+floor((nn-m)/(m-MO)))
       for (rr in 0:UR)    {
       for (hh in 0:max.h) {
         if (hh %in% hh.count) { if (rr > 0) { ARRAY[nn+1, rr+1, hh+1] <- matrixStats::logSumExp(LOGH[, hh+1] + ARRAY[nn, rr, ])   } } else {
-                                              ARRAY[nn+1, rr+1, hh+1] <- matrixStats::logSumExp(LOGH[, hh+1] + ARRAY[nn, rr+1, ]) } }
-        LOGPROBS[nn+1, rr+1] <- matrixStats::logSumExp(ARRAY[nn+1, rr+1, ]) } } }
+                                              ARRAY[nn+1, rr+1, hh+1] <- matrixStats::logSumExp(LOGH[, hh+1] + ARRAY[nn, rr+1, ]) } } } } }
 
   #Extract log-probabilities for argument values
-  OUT <- rep(-Inf, RR)
-  for (i in 1:RR) { if (x[i] %in% (0:max.r)) { OUT[i] <- LOGPROBS[size[i]+1, x[i]+1] } }
+  OUT <- rep(-Inf, HH)
+  for (i in 1:HH) {
+  if (x[i] %in% (0:max.h)) {
+    if (is.na(r[i])) {
+      OUT[i] <- matrixStats::logSumExp(ARRAY[size[i]+1, , x[i]+1])
+    } else {
+      OUT[i] <- ARRAY[size[i]+1, r[i]+1, x[i]+1] - matrixStats::logSumExp(ARRAY[size[i]+1, r[i]+1, ]) } } }
 
   #Return output
   if (log) { OUT } else { exp(OUT) } }
